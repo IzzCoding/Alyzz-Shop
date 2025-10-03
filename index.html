@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alyzz | Store</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+      color: white;
+      padding-bottom: 100px;
+    }
+    .container {
+      max-width: 800px;
+      margin: 60px auto 20px auto;
+      padding: 20px;
+    }
+    .navbar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      background: linear-gradient(90deg, #6a11cb, #2575fc);
+      padding: 12px 0;
+      box-shadow: 0 -4px 12px rgba(0,0,0,0.5);
+      z-index: 1000;
+      border-top-left-radius: 16px;
+      border-top-right-radius: 16px;
+    }
+    .nav-btn {
+      background: rgba(255,255,255,0.1);
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: all 0.3s ease;
+    }
+    .nav-btn:hover {
+      background: rgba(255,255,255,0.25);
+      transform: scale(1.1);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+    }
+    .nav-btn span {
+      font-size: 12px;
+      margin-top: 2px;
+    }
+    #beranda, #store, #partner { display: none; }
+    #beranda.active, #store.active, #partner.active { display: block; }
+
+    .beranda-header h2 { text-align: center; margin:0; font-size:28px; }
+    .beranda-header p { text-align:center; margin-top:6px; color:#ccc; }
+
+    .owner-buttons {
+      display:flex; 
+      justify-content:center; 
+      gap:16px; 
+      margin:20px 0; 
+      flex-wrap:wrap;
+    }
+    .owner-btn {
+      text-decoration:none;
+      padding:12px 20px;
+      border-radius:12px;
+      font-weight:600;
+      color:white;
+      text-align:center;
+      transition: all 0.3s ease;
+      box-shadow:0 4px 12px rgba(0,0,0,0.3);
+      font-size:14px;
+    }
+    .owner-btn.owner { background: linear-gradient(45deg,#ff416c,#ff4b2b); }
+    .owner-btn.channel { background: linear-gradient(45deg,#00c6ff,#0072ff); }
+    .owner-btn.grup { background: linear-gradient(45deg,#f7971e,#ffd200); color:#000; }
+    .owner-btn.saweria { background: linear-gradient(45deg,#7b4397,#dc2430); }
+    .owner-btn:hover { transform: scale(1.1); }
+
+    .programming-boxes { display:flex; flex-wrap:wrap; justify-content:center; gap:16px; margin-top:20px; }
+    .programming-box {
+      background: rgba(255,255,255,0.08); padding:16px; border-radius:12px; text-align:center;
+      width:100px; opacity:0; transform:translateY(20px); transition:all 0.6s ease;
+    }
+    .programming-box.show { opacity:1; transform:translateY(0); }
+    .programming-box .emoji { font-size:40px; display:block; margin:0 auto 8px; }
+
+    .card { background: rgba(255,255,255,0.08); border-radius:12px; padding:16px; margin-bottom:18px;
+      backdrop-filter:blur(10px); box-shadow:0 4px 12px rgba(0,0,0,0.25); overflow:hidden;
+      transition:transform 0.2s ease, background 0.3s ease;
+    }
+    .card:hover { background: rgba(255,255,255,0.12); transform:translateY(-3px); }
+    .card h3 { margin:0 0 6px 0; font-size:18px; }
+    .card .price { font-weight:600; margin-bottom:12px; color:#00ffcc; }
+
+    .btn-toggle {
+      background:#6a11cb; color:white; border:none; padding:8px 14px; border-radius:8px;
+      cursor:pointer; font-size:14px; display:flex; align-items:center; gap:5px; transition:transform 0.2s ease;
+    }
+    .btn-toggle:hover { transform: scale(1.05); }
+    .arrow { display:inline-block; transition:transform 0.3s ease; }
+    .arrow.rotate { transform:rotate(180deg); }
+
+    .buy-btn {
+      background:#6a11cb;
+      color:white;
+      border:none;
+      padding:8px 14px;
+      border-radius:8px;
+      cursor:pointer;
+      font-size:14px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:5px;
+      transition:transform 0.2s ease;
+      margin-top:10px;
+    }
+    .buy-btn:hover { transform: scale(1.05); }
+    
+        .efek {
+  margin-top:12px;
+  height:0;
+  opacity:0;
+  overflow:hidden;
+  transition:height 0.4s ease, opacity 0.4s ease;
+}
+.efek.open {
+  height:auto;
+  opacity:1;
+}
+.efek ul {
+  padding-left:20px;
+  margin:10px 0;
+}
+.efek li {
+  opacity:0;
+  transform:translateY(10px);
+  transition:opacity 0.4s ease, transform 0.4s ease;
+  font-size:15px;
+  font-weight:500;
+  color:#f1f1f1;
+  list-style:none;
+  position:relative;
+  padding-left:24px;
+}
+.efek.open li {
+  opacity:1;
+  transform:translateY(0);
+}
+.efek li::before {
+  content:"🍁";
+  position:absolute;
+  left:0;
+  color:#ffcc00;
+  font-weight:bold;
+  text-shadow:0 0 8px #ffcc00,0 0 12px #ffaa00;
+}
+    
+    .fitur {
+  margin-top:12px;
+  height:0;
+  opacity:0;
+  overflow:hidden;
+  transition:height 0.4s ease, opacity 0.4s ease;
+}
+.fitur.open {
+  height:auto;
+  opacity:1;
+}
+.fitur ul {
+  padding-left:20px;
+  margin:10px 0;
+}
+.fitur li {
+  opacity:0;
+  transform:translateY(10px);
+  transition:opacity 0.4s ease, transform 0.4s ease;
+  font-size:15px;
+  font-weight:500;
+  color:#f1f1f1;
+  list-style:none;
+  position:relative;
+  padding-left:24px;
+}
+.fitur.open li {
+  opacity:1;
+  transform:translateY(0);
+}
+.fitur li::before {
+  content:"⭐";
+  position:absolute;
+  left:0;
+  color:#ffcc00;
+  font-weight:bold;
+  text-shadow:0 0 8px #ffcc00,0 0 12px #ffaa00;
+}
+
+    .keuntungan { margin-top:12px; height:0; opacity:0; overflow:hidden; transition:height 0.4s ease, opacity 0.4s ease; }
+    .keuntungan.open { height:auto; opacity:1; }
+    .keuntungan ul { padding-left:20px; margin:10px 0; }
+    .keuntungan li {
+      opacity:0; transform:translateY(10px); transition:opacity 0.4s ease, transform 0.4s ease;
+      font-size:15px; font-weight:500; color:#f1f1f1; list-style:none; position:relative; padding-left:24px;
+    }
+    .keuntungan.open li { opacity:1; transform:translateY(0); }
+    .keuntungan li::before { content:"✔"; position:absolute; left:0; color:#00ffcc; font-weight:bold; text-shadow:0 0 8px #00ffcc,0 0 12px #00ffaa; }
+
+    .partner-box { background: rgba(255,255,255,0.08); padding:16px; border-radius:12px; margin-top:20px; }
+    .partner-box h3 { text-align:center; margin-bottom:12px; }
+    .partner-box ul { padding-left:0; list-style:none; text-align:center; }
+    .partner-box ul li { margin:6px 0; }
+    .partner-box ul li a { color:#00ffcc; text-decoration:none; font-weight:500; transition:transform 0.2s ease; }
+    .partner-box ul li a:hover { transform: scale(1.05); }
+
+    #qrisModal {
+      display:none;
+      position:fixed;
+      top:0; left:0;
+      width:100%; height:100%;
+      background:rgba(0,0,0,0.8);
+      z-index:2000;
+      align-items:center;
+      justify-content:center;
+    }
+    #qrisModal .qris-box {
+      background:#1c1c2b;
+      padding:20px;
+      border-radius:12px;
+      width:90%;
+      max-width:400px;
+      text-align:center;
+      color:white;
+      box-shadow:0 0 15px rgba(0,255,204,0.6);
+    }
+    #qrisModal img {
+      width:220px;
+      margin:15px auto;
+      display:block;
+      border-radius:12px;
+      box-shadow:0 0 20px rgba(0,255,204,0.5);
+    }
+    #qrisModal input {
+      margin:10px 0;
+      padding:10px;
+      width:100%;
+      border-radius:8px;
+      border:none;
+    }
+    #qrisModal button {
+      padding:10px 16px;
+      border:none;
+      border-radius:8px;
+      cursor:pointer;
+      font-weight:600;
+      margin-top:10px;
+    }
+    #kirimBtn { background:#00ffcc; color:#000; }
+    .qris-close { background:#ff3b3b; color:white; }
+  </style>
+</head>
+<body>
+  <!-- BERANDA -->
+  <div class="container" id="beranda">
+    <div class="beranda-header">
+      <h2>Zyxxennn Official</h2>
+      <p>Informasi atau About</p>
+    </div>
+    <div class="owner-buttons">
+      <a href="https://t.me/Zyxxennn" target="_blank" class="owner-btn owner">OWNER</a>
+      <a href="https://t.me/ZyxxennnCH" target="_blank" class="owner-btn channel">CHANNEL OWNER</a>
+      <a href="https://t.me/RoomZyxxennn" target="_blank" class="owner-btn grup">GRUP OWNER</a>
+      <a href="https://saweria.co/ZyxxennnOffociall" target="_blank" class="owner-btn saweria">SAWERIA</a>
+    </div>
+
+    <div class="programming-boxes">
+      <div class="programming-box"><div class="emoji">🌐</div><span>HTML</span></div>
+      <div class="programming-box"><div class="emoji">🔷</div><span>CSS</span></div>
+      <div class="programming-box"><div class="emoji">🟨</div><span>JavaScript</span></div>
+      <div class="programming-box"><div class="emoji">🐍</div><span>Python</span></div>
+    </div>
+  </div>
+
+  <!-- STORE -->
+  <div class="container" id="store">
+   <!-- PRODUK 1 -->
+    <div class="card">
+      <h3>PO AKAME X FOX V9</h3>
+      <div class="price">HARGA PO 5.000 NO UP</div>
+      <div class="price">HARGA PO 10.000 FULL UP</div>
+      <div class="price">HARGA RILIS 10.000 NO UP</div>
+      <div class="price">HARGA RILIS 20.000 FULL UP</div>
+      <div class="price">HARGA RESELLER SC 30.000</div>
+      <div class="price">HARGA PARTNER SC 40.000</div>
+      <div class="price">HARGA OWNER SC 50.000</div>
+      <div class="price">HARGA TANGAN KANAN SC 65.000</div>
+      <div class="price">HARGA CEO SC 75.000</div>
+      <div class="price">HARGA MODERATOR SC 90.000</div>
+      <div class="price">HARGA STAFF SC 100.000</div>
+      <button class="btn-toggle" data-target="fitur">Efek? <span class="arrow">▼</span></button>
+      <div class="fitur"><ul>
+        <li>FORCLOSE</li>
+        <li>BLANK</li>
+        <li>DELAY HARD</li>
+        <li>DELAY INVIS</li>
+        <li>DELAY BETA</li>
+        <li>FREEZE X UI</li>
+        <li>CRASH UI</li>
+        <li>BLANK UI</li>
+      </ul></div>
+      <button class="btn-toggle" data-target="keuntungan">Keamanan <span class="arrow">▼</span></button>
+      <div class="keuntungan"><ul>
+        <li>ENC</li>
+        <li>ADD DB</li>
+      </ul></div>
+      <button class="buy-btn" data-produk="Sc Akame">Buy</button>
+    </div>
+
+    <!-- PRODUK 2 -->
+    <div class="card">
+      <h3>APLIKASI BUG TOXIC AVENGER</h3>
+      <div class="price">HARGA AKSES PERBULAN 10.000</div>
+      <div class="price">HARGA AKSES PERMANEN 15.000</div>
+      <div class="price">HARGA RESELLER 25K</div>
+      <div class="price">HARGA PARTNER 35.000</div>
+      <div class="price">HARGA MODERATOR 40.000</div>
+      <div class="price">HARGA OWNER 45.000</div>
+      <button class="btn-toggle" data-target="fitur">Fitur? <span class="arrow">▼</span></button>
+      <div class="fitur"><ul>
+        <li>CRASH INFINITY</li>
+        <li>DELAY INVISIBLE</li>
+        <li>BULLDOTEXX</li>
+        <li>CRASH OS</li>
+        <li>FORCLOSE</li>
+      </ul></div>
+      <button class="btn-toggle" data-target="keuntungan">Keuntungan <span class="arrow">▼</span></button>
+      <div class="keuntungan"><ul>
+        <li>BEBAS BUG MENGGUNAKAN SENDER</li>
+        <li>BEBAS SPAM SEPUASNYA</li>
+        <li>BEBAS BUG BERAPA NOMOR PUN</li>
+        <li>BEBAS MENGGUNAKAN COMMAND</li>
+        <li>MEMILIKI KEAMANAN USERNAME DAN PASSWORD</li>
+        <li>TANPA ADANYA MENGGUNAKAN PANEL</li>
+        <li>CUKUP LOGIN, LALU GUNAKAN APLIKASI NYA</li>
+      </ul></div>
+      <button class="buy-btn" data-produk="Toxic Avenger">Buy</button>
+    </div>
+
+    <!-- PRODUK 3 -->
+    <div class="card">
+      <h3>RESELLER PANEL</h3>
+      <div class="price">HARGA 5.000</div>
+      <button class="btn-toggle" data-target="keuntungan">Keuntungan <span class="arrow">▼</span></button>
+      <div class="keuntungan"><ul>
+        <li>BISA JUALAN PANEL 1GB - UNLI</li>
+      </ul></div>
+      <button class="buy-btn" data-produk="Reseller Panel">Buy</button>
+    </div>
+
+    <!-- PRODUK 4 -->
+    <div class="card">
+      <h3>ADMIN PANEL</h3>
+      <div class="price">HARGA 7.000</div>
+      <button class="btn-toggle" data-target="keuntungan">Keuntungan <span class="arrow">▼</span></button>
+      <div class="keuntungan"><ul>
+        <li>BISA JUALAN PANEL 1G - UNLI</li>
+        <li>BISA OPEN RESS PANEL</li>
+      </ul></div>
+      <button class="buy-btn" data-produk="Admin Panel">Buy</button>
+    </div>
+
+    <!-- PRODUK 5 -->
+<div class="card">
+  <h3>PT PANEL</h3>
+  <div class="price">HARGA 15.000</div>
+  <button class="btn-toggle" data-target="keuntungan">Keuntungan <span class="arrow">▼</span></button>
+  <div class="keuntungan"><ul>
+    <li>BISA JUALAN PANEL 1GB - UNLI</li>
+    <li>BISA OPEN RESS PANEL</li>
+    <li>BISA OPEN ADP/ADMIN PANEL</li>
+  </ul></div>
+  <button class="buy-btn" data-produk="Pt Panel">Buy</button>
+</div>
+  
+    <!-- PRODUK 6 -->
+    <div class="card">
+      <h3>OWN PANEL</h3>
+      <div class="price">HARGA 30.000</div>
+      <button class="btn-toggle" data-target="keuntungan">Keuntungan <span class="arrow">▼</span></button>
+      <div class="keuntungan"><ul>
+        <li>BISA JUALAN PANEL 1GB - UNLI</li>
+        <li>BISA OPEN RESS PANEL</li>
+        <li>BISA OPEN ADP/ADMIN PANEL<li>
+        <li>BISA OPEN PT PANEL<li>
+      </ul></div>
+      <button class="buy-btn" data-produk="Own Panel">Buy</button>
+    </div>
+
+    <!-- PRODUK 7 -->
+    <div class="card">
+      <h3>SC SCRAY DEATH</h3>
+      <div class="price">HARGA NO UP 15.000</div>
+      <div class="price">HARGA FULL UP 25.000</div>
+      <div class="price">RESELLER SC 35.000</div>
+      <button class="btn-toggle" data-target="keuntungan">Keuntungan No Up <span class="arrow">▼</span></button>
+      <div class="keuntungan"><ul>
+        <li>CUMA DAPET SC NYA</li>
+        <li>NGGA DAPET SC UPDATE LAGI</li>
+      </ul></div>
+      <button class="btn-toggle" data-target="fitur">Keuntungan Full Up<span class="arrow">▼</span></button>
+      <div class="fitur"><ul>
+        <li>MASUK GRUP RESS SC</li>
+        <li>MENDAPATKAN SC UPDATE TERBARU</li>
+        <li>TIDAK BISA MENJUAL SC<li>
+      </ul></div>
+      <button class="btn-toggle" data-target="efek">Keuntungan Reseller<span class="arrow">▼</span></button>
+      <div class="efek"><ul>
+        <li>MASUK GRUP RESS SC</li>
+        <li>MENDAPATKAN SC UPDATE TERBARU</li>
+        <li>BISA MENJUAL SC<li>
+      </ul></div>
+      <button class="buy-btn" data-produk="Scary Death">Buy</button>
+    </div>
+
+    <!-- PRODUK 8 -->
+    <div class="card">
+      <h3>SC BOT LIMIT</h3>
+      <div class="price">Harga 10.000</div>
+      <button class="btn-toggle" data-target="keuntungan">Keuntungan <span class="arrow">▼</span></button>
+      <div class="keuntungan"><ul>
+        <li>PUNYA BOT LIMIT SENDIRI</li>
+        <li>BISA CHAT SAMA BUYYER KALO BUYYER NYA LIMIT</li>
+        <li>GAMPANG KOMUNIKASI SAMA BUYYER<li>
+        <li>DLL<li>
+      </ul></div>
+      <button class="buy-btn" data-produk="Sc Limit">Buy</button>
+    </div>
+
+    <!-- PRODUK 9 -->
+    <div class="card">
+      <h3>MURBANS DAN ADMIN MURBANS</h3>
+      <div class="price">HARGA 20.000</div>
+      <button class="btn-toggle" data-target="keuntungan">Keuntungan <span class="arrow">▼</span></button>
+      <div class="keuntungan"><ul>
+        <li>𝖦𝖤𝖳 𝖬𝖳 𝖦𝖠𝖢𝖮𝖱</li>
+        <li>𝖦𝖤𝖳 𝖬𝖤𝖳𝖧𝖮𝖣 𝟤 𝖭𝖮</li>
+        <li>𝖦𝖤𝖳 𝖬𝖳 𝖳𝖤𝖬𝖡𝖴𝖲 𝖭𝖮 𝖮𝖫𝖣<li>
+        <li>𝖦𝖤𝖳 𝖬𝖳 𝖳𝖤𝖬𝖡𝖴𝖲 𝖶𝖠 𝖡𝖨𝖲𝖭𝖨𝖲<li>
+        <li>𝖦𝖤𝖳 𝖬𝖳 𝖥𝖱𝖤𝖲𝖧 𝖠𝖫𝖫 𝖦𝖠𝖢𝖮𝖱<li>
+        <li>𝖦𝖤𝖳 𝖠𝖯𝖪 𝖶𝖠 𝖥𝖢 𝖭𝖤𝖶 𝖴𝖯<li>
+        <li>𝖦𝖤𝖳 𝖠𝖯𝖪 𝖢𝖤𝖪 𝖡𝖠𝖭𝖲<li>
+        <li>𝖦𝖤𝖳 𝖬𝖤𝖳𝖧𝖮𝖣𝖤 𝖢𝖮𝖬𝖡𝖮<li>
+        <li>𝖦𝖤𝖳 𝖳𝖴𝖳𝖮𝖱 𝖡𝖠𝖭𝖣 𝖯𝖠𝖪𝖤 𝟤 𝖭𝖮<li>
+        <li>𝖦𝖤𝖳 𝖳𝖴𝖳𝖮𝖱 𝖡𝖠𝖭𝖣 𝖳𝖠𝖭𝖯𝖠 𝖪𝖨𝖱𝖨𝖬 𝖬𝖳<li>
+        <li>𝖦𝖤𝖳 𝖳𝖴𝖳𝖮𝖱 𝖡𝖠𝖭𝖣 𝖳𝖠𝖭𝖯𝖠 𝖡𝖠𝖫𝖤𝖲<li>
+      </ul></div>
+      <button class="buy-btn" data-produk="Bot Telegram">Buy</button>
+    </div>
+
+  <!-- PARTNER -->
+  <div class="container" id="partner">
+    <div class="partner-box">
+      <h3>ALL PARTNER Alyzz | Store</h3>
+      <ul>
+        <li><a href="https://t.me/Zyxxennn" target="_blank"></a></li>
+        <li><a href="https://t.me/Partner2" target="_blank"></a></li>
+        <li><a href="https://t.me/Partner3" target="_blank"></a></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- NAVBAR -->
+  <div class="navbar">
+    <button class="nav-btn" data-target="beranda">🏠<span>Beranda</span></button>
+    <button class="nav-btn" data-target="store">🛒<span>Store</span></button>
+    <button class="nav-btn" data-target="partner">🤝<span>Partner</span></button>
+  </div>
+
+  <!-- MODAL QRIS -->
+  <div id="qrisModal">
+    <div class="qris-box">
+      <h3>🍁 Pembayaran via QRIS 💫</h3>
+      <img src="https://files.catbox.moe/2ifiot.jpg" alt="QRIS">
+      <input type="file" id="buktiInput" accept="image/*">
+      <input type="text" id="telegramInput" placeholder="Username Telegram Contoh @Zyxxennn">
+      <button id="kirimBtn">Kirim</button>
+      <button class="qris-close" onclick="closeModal()">Tutup</button>
+    </div>
+  </div>
+
+  <script>
+    /* NAVIGASI */
+    const navBtns = document.querySelectorAll('.nav-btn');
+    const sections = ['beranda','store','partner'];
+    navBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        sections.forEach(sec => document.getElementById(sec).classList.remove('active'));
+        document.getElementById(btn.dataset.target).classList.add('active');
+        if (btn.dataset.target === "beranda") showProgrammingBoxes();
+      });
+    });
+    document.getElementById('beranda').classList.add('active');
+
+    /* ANIMASI BOX PROGRAMMING */
+    const programmingBoxes = document.querySelectorAll('.programming-box');
+    function showProgrammingBoxes() {
+      programmingBoxes.forEach((box,i)=>
+        setTimeout(()=>box.classList.add('show'), i*150)
+      );
+    }
+    showProgrammingBoxes();
+
+/* TOGGLE FITUR & KEUNTUNGAN PRODUK */
+const toggleBtns = document.querySelectorAll('.btn-toggle');
+toggleBtns.forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const currentCard = btn.parentElement;
+    const target = btn.dataset.target; // fitur // efek / keuntungan
+    const targetDiv = currentCard.querySelector('.' + target);
+    const arrow = btn.querySelector('.arrow');
+    const isOpen = targetDiv.classList.contains('open');
+
+    // Tutup semua di card ini (hanya dalam card, bukan global)
+    currentCard.querySelectorAll('.fitur, .efek, .keuntungan').forEach(div=>div.classList.remove('open'));
+    currentCard.querySelectorAll('.arrow').forEach(a=>a.classList.remove('rotate'));
+
+    // Buka yang ditekan
+    if(!isOpen){
+      targetDiv.classList.add('open');
+      arrow.classList.add('rotate');
+    }
+  });
+});
+
+    /* MODAL QRIS */
+    const modal = document.getElementById('qrisModal');
+    let produkDipilih = "";
+
+    document.querySelectorAll('.buy-btn').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        produkDipilih = btn.dataset.produk;
+        modal.style.display = "flex";
+      });
+    });
+    function closeModal(){ modal.style.display = "none"; }
+
+    /* KIRIM DATA KE TELEGRAM BOT */
+    document.getElementById('kirimBtn').addEventListener('click', async ()=>{
+      const buktiFile = document.getElementById('buktiInput').files[0];
+      const telegramNama = document.getElementById('telegramInput').value;
+      if(!buktiFile || !telegramNama){
+        alert("Lengkapi bukti transfer & nama telegram!");
+        return;
+      }
+      const BOT_TOKEN = "8316854638:AAESN3ThtkFpE58uy8pe2wXd51L4bHd9XxM";
+      const OWNER_CHAT_ID = "8447173769";
+
+      const pesan = `📢 Bukti pembayaran baru!\n\n🛒 Produk: ${produkDipilih}\n👤 Telegram: ${telegramNama}`;
+      await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({chat_id: OWNER_CHAT_ID, text: pesan})
+      });
+
+      const formData = new FormData();
+      formData.append("chat_id", OWNER_CHAT_ID);
+      formData.append("photo", buktiFile);
+      await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
+        method:"POST",
+        body: formData
+      });
+
+      alert("Bukti pembayaran terkirim ke owner ✅");
+      closeModal();
+    });
+  </script>
+</body>
+                                     </html>
